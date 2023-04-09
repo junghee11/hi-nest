@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Delete, Param, Put, Patch, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Put, Patch, Body, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { Board } from './entities/board.entity';
+import { CreatePostDto } from './dto/create-post.dto';
 
 @Controller('user/boards')
 export class BoardsController {
@@ -13,22 +14,24 @@ export class BoardsController {
     }
     
     @Get(":id")
-    getOne(@Param("id") postId :string){
+    getOne(@Param("id") postId :number){
+        console.log(typeof postId)
         return this.boardsService.getOne(postId);
     }
 
     @Post()
-    create(@Body() postData){
+    @UsePipes(ValidationPipe)
+    create(@Body() postData : CreatePostDto){
         return this.boardsService.create(postData);
     }
 
     @Delete(":id")
-    remove(@Param('id') postId: string){
+    remove(@Param('id') postId: number){
         return this.boardsService.deleteOne(postId);
     }
 
     @Patch(':id')
-    patch(@Param('id') postId: string, @Body() updateData) {
+    patch(@Param('id') postId: number, @Body() updateData) {
         return this.boardsService.update(postId, updateData);
     }
 }
